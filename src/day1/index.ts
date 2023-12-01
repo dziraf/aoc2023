@@ -1,7 +1,9 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const digitRegex = /(?=(one|two|three|four|five|six|seven|eight|nine|[1-9]))/g;
+const simpleDigitRegex = /\d/g;
+const wordDigitRegex = /(?=(one|two|three|four|five|six|seven|eight|nine|\d))/g;
+
 const digitMapping: Record<string, number> = {
   one: 1,
   two: 2,
@@ -22,30 +24,23 @@ const inputFile = await fs.readFile(path.resolve(
 const inputText = inputFile.toString();
 const inputLines = inputText.split(/\r?\n/g);
 
-const answer1 = inputLines
-  .reduce((memo: number, current: string) => {
-    const digits = current.split('').filter((v) => Number.isInteger(Number(v)));
+const nonEmptyMatchValue = (v: unknown) => v !== '';
 
-    const first = digits[0];
-    const last = digits.slice(-1)[0] ?? first;
-    const calibrationValue = `${first}${last}`;
-    
-    return memo + Number(calibrationValue);
-  }, 0)
-
-const answer2 = inputLines
+const answer = (regex: RegExp) => inputLines
   .reduce((memo: number, current: string) => {
-    const digits = [...current.matchAll(digitRegex)];
+    const digits = [...current.matchAll(regex)];
 
     const firstMatch = digits[0];
     const lastMatch = digits.slice(-1)[0];
+    const firstRawValue = firstMatch.find(nonEmptyMatchValue);
+    const lastRawValue = lastMatch.find(nonEmptyMatchValue);
 
-    const first = digitMapping[firstMatch?.[1]] ?? firstMatch?.[1];
-    const last = digitMapping[lastMatch?.[1]] ?? lastMatch?.[1];
+    const first = digitMapping[String(firstRawValue)] ?? firstRawValue;
+    const last = digitMapping[String(lastRawValue)] ?? lastRawValue;
     const calibrationValue = `${first}${last}`;
     
     return memo + Number(calibrationValue);
   }, 0);
 
-console.log('p1', answer1);
-console.log('p2', answer2);
+console.log('p1', answer(simpleDigitRegex));
+console.log('p2', answer(wordDigitRegex));
