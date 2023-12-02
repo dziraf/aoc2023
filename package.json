@@ -4,7 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "d1": "ts-node-esm src/day1/index.ts"
+    "d1": "ts-node-esm src/day1/index.ts",
+    "d2": "ts-node-esm src/day2/index.ts"
   },
   "author": "",
   "license": "ISC",
