@@ -1,21 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const simpleDigitRegex = /\d/g;
-const wordDigitRegex = /(?=(one|two|three|four|five|six|seven|eight|nine|\d))/g;
-
-const digitMapping: Record<string, number> = {
-  one: 1,
-  two: 2,
-  three: 3,
-  four: 4,
-  five: 5,
-  six: 6,
-  seven: 7,
-  eight: 8,
-  nine: 9,
-};
-
 const inputFile = await fs.readFile(path.resolve(
   process.cwd(),
   'src/day2',
