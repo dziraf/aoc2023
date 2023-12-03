@@ -1,14 +1,4 @@
-import fs from 'fs/promises';
-import path from 'path';
-
-const inputFile = await fs.readFile(path.resolve(
-  process.cwd(),
-  'src/day3',
-  'input.txt',
-));
-const inputText = inputFile.toString();
-const inputLines = inputText.split(/\r?\n/g);
-
+import { readInput } from '../utils/read-input.js';
 interface DataElement {
   startIndex: number;
   endIndex: number;
@@ -20,6 +10,8 @@ interface NumberElement extends DataElement { value: number }
 
 const allNumbers: NumberElement[] = [];
 const allSymbols: SymbolElement[] = [];
+
+const { lines: inputLines } = await readInput('day3');
 
 inputLines.forEach((current: string, index) => {
   const numMatches = [...current.matchAll(/\d{1,}/g)];

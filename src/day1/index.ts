@@ -1,5 +1,4 @@
-import fs from 'fs/promises';
-import path from 'path';
+import { readInput } from '../utils/read-input.js';
 
 const simpleDigitRegex = /\d/g;
 const wordDigitRegex = /(?=(one|two|three|four|five|six|seven|eight|nine|\d))/g;
@@ -16,13 +15,7 @@ const digitMapping: Record<string, number> = {
   nine: 9,
 };
 
-const inputFile = await fs.readFile(path.resolve(
-  process.cwd(),
-  'src/day1',
-  'input.txt',
-));
-const inputText = inputFile.toString();
-const inputLines = inputText.split(/\r?\n/g);
+const { lines: inputLines } = await readInput('day1');
 
 const nonEmptyMatchValue = (v: unknown) => v !== '';
 

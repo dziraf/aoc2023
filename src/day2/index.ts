@@ -1,13 +1,4 @@
-import fs from 'fs/promises';
-import path from 'path';
-
-const inputFile = await fs.readFile(path.resolve(
-  process.cwd(),
-  'src/day2',
-  'input.txt',
-));
-const inputText = inputFile.toString();
-const inputLines = inputText.split(/\r?\n/g);
+import { readInput } from '../utils/read-input.js';
 
 interface GameInfo {
   id: number;
@@ -17,6 +8,8 @@ interface GameInfo {
     blue?: number;
   }[];
 }
+
+const { lines: inputLines } = await readInput('day2');
 
 const games: GameInfo[] = inputLines.reduce((memo: any[], current, index) => {
   const cubeSetsTokens = current.replace(/Game \d{1,}: /, '').split(/; ?/);
