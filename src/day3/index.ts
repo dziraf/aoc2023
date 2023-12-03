@@ -39,14 +39,10 @@ const symbolsSurroundingANumber = (element: NumberElement, symbols: SymbolElemen
   const { startIndex, endIndex, row } = element;
 
   return symbols.filter((symbol) => {
-    // Left
-    if (symbol.row === row && symbol.startIndex === startIndex - 1) return true;
-    // Right
-    if (symbol.row === row && symbol.startIndex === endIndex) return true;
-    // Up
-    if (symbol.row === row - 1 && symbol.startIndex >= (startIndex - 1) && symbol.startIndex <= endIndex) return true;
-    // Down
-    if (symbol.row === row + 1 && symbol.startIndex >= (startIndex - 1) && symbol.startIndex <= endIndex) return true;
+    if ((symbol.row >= row - 1)
+      && (symbol.row <= row + 1)
+      && (symbol.startIndex >= (startIndex - 1) && symbol.startIndex <= endIndex)
+    ) return true;
 
     return false;
   })
