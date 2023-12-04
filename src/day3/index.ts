@@ -1,4 +1,5 @@
 import { readInput } from '../utils/read-input.js';
+
 interface DataElement {
   startIndex: number;
   endIndex: number;
