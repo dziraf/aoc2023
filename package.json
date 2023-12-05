@@ -8,7 +8,8 @@
     "d2": "ts-node-esm src/day2/index.ts",
     "d3": "ts-node-esm src/day3/index.ts",
     "d4": "ts-node-esm src/day4/index.ts",
-    "d5": "ts-node-esm src/day5/index.ts"
+    "d5": "ts-node-esm src/day5/index.ts",
+    "d5:part2:workers": "node src/day5/part2/index.js"
   },
   "author": "",
   "license": "ISC",
