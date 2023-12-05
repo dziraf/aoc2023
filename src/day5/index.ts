@@ -122,8 +122,6 @@ const answer2 = () => {
   let min = 0;
 
   while (true) {
-    // if (min % 1000000 === 0) console.log(min);
-
     const seed = locationToSeed(min);
 
     if (seeds.some((s) => seed >= s.start && seed <= s.end)) {
