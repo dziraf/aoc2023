@@ -67,6 +67,9 @@ const answer2 = () => {
   return result;
 }
 
-
+console.time('time1');
 console.log('Part 1. ', answer1());
+console.timeEnd('time1');
+console.time('time2');
 console.log('Part 2. ', answer2());
+console.timeEnd('time2');
