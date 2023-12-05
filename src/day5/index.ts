@@ -79,10 +79,10 @@ const finalLocation = (part: 1 | 2) => (from: number) => {
 const seedToLocation = finalLocation(1);
 const locationToSeed = finalLocation(2);
 
-const getSeedRanges = (seeds: number[], part: 1 | 2) => {
+const getSeedRanges = (seeds: number[], part: 1 | 2): Range[] => {
   if (part === 1) {
     return seeds.reduce(
-      (memo: Record<string, number>[], seed: number) => [
+      (memo: Range[], seed: number) => [
         ...memo,
         { start: seed, end: seed },
       ],
@@ -90,7 +90,7 @@ const getSeedRanges = (seeds: number[], part: 1 | 2) => {
     );
   }
 
-  return seeds.reduce((memo: Record<string, number>[], current, i) => {
+  return seeds.reduce((memo: Range[], current, i) => {
     if (i % 2 !== 0) return memo;
     if (!seeds[i + 1]) return memo;
 
