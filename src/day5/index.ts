@@ -1,16 +1,24 @@
-import { readInput } from '../utils/read-input.js';
+import { readInput } from "../utils/read-input.js";
 
-const { lines: inputLines } = await readInput('day5');
+const { lines: inputLines } = await readInput("day5");
 
-const textToTokens = (text: string): [number, number, number] => text.split(' ').map(Number) as [number, number, number];
+interface Range {
+  start: number;
+  end: number;
+}
+
+const textToTokens = (text: string): [number, number, number] =>
+  text.split(" ").map(Number) as [number, number, number];
 
 const getData = async () => {
   let currentSection = null;
   const data: Record<string, [number, number, number][]> = {};
 
-  data.seeds = [textToTokens(inputLines[0].replace('seeds: ', ''))];
+  data.seeds = [textToTokens(inputLines[0].replace("seeds: ", ""))];
   for (const line of inputLines) {
-    const m = line.match(/(seed-to-soil|soil-to-fertilizer|fertilizer-to-water|water-to-light|light-to-temperature|temperature-to-humidity|humidity-to-location)/g);
+    const m = line.match(
+      /(seed-to-soil|soil-to-fertilizer|fertilizer-to-water|water-to-light|light-to-temperature|temperature-to-humidity|humidity-to-location)/g
+    );
     if (m) currentSection = m[0];
     else if (currentSection && line.length) {
       if (data[currentSection]) {
@@ -22,60 +30,63 @@ const getData = async () => {
   }
 
   return data;
-}
+};
 
 const data = await getData();
 
-const move = (from: number[], to: [number, number, number][]) => {
-  const results = [];
-  const checked = [];
+const sourceToDest = (from: number) => ([dest, source, range]: [number, number, number]) => from >= source && from <= source + range;
+const destToSource = (from: number) => ([dest, source, range]: [number, number, number]) => from >= dest && from <= dest + range;
 
-  for (const coordinates of to) {
-    const [dest, source, range] = coordinates;
+const move = (from: number, to: [number, number, number][], part: 1 | 2) => {
+  const spot = to.find(part === 1 ? sourceToDest(from) : destToSource(from));
 
-    for (const loc of from) {
-      if (loc >= source && loc <= source + range) {
-        const newPos = (loc - source) + dest;
-        results.push(newPos);
-        checked.push(loc);
-      }
+  if (spot) {
+    const [dest, source] = spot;
+
+    if (part === 1) {
+      return from - source + dest;
     }
+    return from - dest + source;
   }
 
-  for (const loc of from) {
-    if (!checked.includes(loc)) {
-      results.push(loc);
-    }
+  return from;
+};
+
+const finalLocation = (part: 1 | 2) => (from: number) => {
+  let result = from;
+
+  let actions = [
+    "seed-to-soil",
+    "soil-to-fertilizer",
+    "fertilizer-to-water",
+    "water-to-light",
+    "light-to-temperature",
+    "temperature-to-humidity",
+    "humidity-to-location",
+  ];
+
+  if (part === 2) {
+    actions = actions.reverse();
   }
 
-  return results;
-}
+  for (const action of actions) {
+    result = move(result, data[action], part);
+  }
 
-// console.log(data);
+  return result;
+};
 
-const makeAllMoves = (from: number[]) => {
-  let result = [...from];
+const seedToLocation = finalLocation(1);
+const locationToSeed = finalLocation(2);
 
-  result = move(result, data['seed-to-soil']);
-  result = move(result, data['soil-to-fertilizer']);
-  result = move(result, data['fertilizer-to-water']);
-  result = move(result, data['water-to-light']);
-  result = move(result, data['light-to-temperature']);
-  result = move(result, data['temperature-to-humidity']);
-  result = move(result, data['humidity-to-location']);
-
-  result.sort();
-
-  const min = result.reduce((memo, current) => Math.min(current, memo), Number.MAX_SAFE_INTEGER)
-
-  return min;
-}
-
-const getInitialSeeds = (seeds: number[], part: number) => {
+const getSeedRanges = (seeds: number[], part: 1 | 2) => {
   if (part === 1) {
     return seeds.reduce(
-      (memo: Record<string, number>[], seed: number) => ([...memo, { start: seed, end: seed } ]),
-      [],
+      (memo: Record<string, number>[], seed: number) => [
+        ...memo,
+        { start: seed, end: seed },
+      ],
+      []
     );
   }
 
@@ -89,31 +100,44 @@ const getInitialSeeds = (seeds: number[], part: number) => {
 
     return memo;
   }, []);
-}
+};
 
 const answer1 = () => {
-  const seeds = data.seeds[0];
-  
-  return makeAllMoves(seeds);
-}
+  const seeds = getSeedRanges(data.seeds[0], 1);
+
+  let min = Number.MAX_SAFE_INTEGER;
+  for (const range of seeds) {
+    const { start, end } = range;
+
+    for (let loc = start; loc <= end; loc++) {
+      min = Math.min(seedToLocation(loc), min);
+    }
+  }
+
+  return min;
+};
 
 const answer2 = () => {
-  const seeds = data.seeds[0];
-  const from = seeds.reduce((memo: Record<string, number>[], current, i) => {
-    if (i % 2 !== 0) return memo;
-    if (!seeds[i + 1]) return memo;
+  const seeds = getSeedRanges(data.seeds[0], 2);
+  let min = 0;
 
-    const start = current;
-    const end = current + seeds[i + 1] - 1;
-    memo.push({ start, end });
+  while (true) {
+    // if (min % 1000000 === 0) console.log(min);
 
-    return memo;
-  }, []);
+    const seed = locationToSeed(min);
 
-  console.log(from);
+    if (seeds.some((s) => seed >= s.start && seed <= s.end)) {
+      return min;
+    }
 
-  // return makeAllMoves(from);
+    min++;
+  }
 }
 
-console.log('Part 1. ', answer1());
-console.log('Part 2. ', answer2());
+console.time("P1");
+console.log("Part 1. ", answer1());
+console.timeEnd("P1");
+
+console.time("P2");
+console.log("Part 2. ", answer2());
+console.timeEnd("P2");
