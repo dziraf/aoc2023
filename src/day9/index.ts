@@ -32,7 +32,7 @@ const nextValueFromSequences = (sequences: number[][]) => {
 }
 
 const previousValueFromSequences = (sequences: number[][]) => {
-  return sequences.reverse().slice(1).reduce((memo, current) => ([...memo, current[0] - memo.slice(-1)[0]]), [0]).slice(-1)[0];
+  return sequences.reverse().reduce((memo, current) => ([...memo, current[0] - (memo.slice(-1)?.[0] ?? 0)]), []).slice(-1)[0];
 }
 
 const answer1 = () => {
