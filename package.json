@@ -13,7 +13,8 @@
     "d6": "ts-node-esm src/day6/index.ts",
     "d7": "ts-node-esm src/day7/index.ts",
     "d8": "ts-node-esm src/day8/index.ts",
-    "d9": "ts-node-esm src/day9/index.ts"
+    "d9": "ts-node-esm src/day9/index.ts",
+    "d10": "ts-node-esm src/day10/index.ts"
   },
   "author": "",
   "license": "ISC",
